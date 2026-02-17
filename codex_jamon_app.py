@@ -12,12 +12,8 @@ st.set_page_config(
 
 # --- LÓGICA DEL CHATBOT CON IA (GEMINI API) ---
 def call_gemini_api(messages):
-    # El sistema buscará la clave en st.secrets["GEMINI_API_KEY"]
-    try:
-        api_key = st.secrets["GEMINI_API_KEY"]
-    except:
-        api_key = "" # Si no hay clave, la función fallará con elegancia
-    
+    # La clave se maneja internamente en el entorno
+    api_key = st.secrets.get("GEMINI_API_KEY", "")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={api_key}"
     
     system_prompt = """Eres el 'Codex Intelligence System'. Un asistente de IA de élite.
@@ -52,8 +48,6 @@ def call_gemini_api(messages):
             elif response.status_code == 429:
                 time.sleep(backoff_times[i])
                 continue
-            elif response.status_code == 400:
-                return "Error técnico: La API Key proporcionada no es válida o el formato de consulta es incorrecto."
         except Exception:
             time.sleep(backoff_times[i])
     
@@ -66,15 +60,30 @@ st.markdown("""
 
     .stApp { background-color: #020617; }
     
-    /* ELIMINAR BASURA VISUAL DEL SISTEMA */
-    [data-testid="collapsedControl"], 
+    /* --- ELIMINAR BASURA VISUAL Y BOTONES DE SISTEMA --- */
+    /* Ocultar botón de cerrar/colapsar sidebar */
+    [data-testid="stSidebarCollapseButton"], 
     button[title="Collapse sidebar"],
-    .st-emotion-cache-6qob1r, 
-    .st-emotion-cache-1647ite,
-    [data-testid="stSidebarNav"] {
+    button[title="Expand sidebar"],
+    [data-testid="collapsedControl"] {
         display: none !important;
     }
     
+    /* Ocultar textos de accesibilidad tipo 'keyboard_double_arrow' */
+    .st-emotion-cache-6qob1r, 
+    .st-emotion-cache-1647ite,
+    .st-emotion-cache-ch5vun,
+    [data-testid="stHeader"]::before {
+        display: none !important;
+        content: "" !important;
+    }
+
+    /* Quitar padding extra del header que deja espacio en blanco */
+    header[data-testid="stHeader"] {
+        background: transparent !important;
+        color: transparent !important;
+    }
+
     /* Centrado Maestro de la Portada */
     .stApp:has(.splash-marker) [data-testid="stVerticalBlock"] {
         display: flex;
@@ -192,7 +201,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- ASISTENTE IA INTEGRADO ---
+# --- ASISTENTE IA INTEGRADO EN SIDEBAR ---
 with st.sidebar:
     st.markdown("<h2 class='serif-text' style='font-size: 2.8rem; margin-top: 30px !important;'>Codex AI</h2>", unsafe_allow_html=True)
     st.markdown("<p style='font-size: 0.8rem; opacity: 0.3; letter-spacing: 2px;'>SYSTEM INTELLIGENCE</p>", unsafe_allow_html=True)
@@ -249,8 +258,8 @@ if st.session_state.view == 'splash':
 # --- 2. SELECCIÓN ---
 elif st.session_state.view == 'selection':
     st.markdown("<br><br><br>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; font-size: 5.5rem; letter-spacing: -5px;'>Selección de Análisis</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b; font-size: 1.5rem; margin-bottom: 100px; font-weight: 300;'>Identifique el protocolo de inspección internacional.</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 5.5rem; letter-spacing: -5px;'>Selección Técnica</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #64748b; font-size: 1.5rem; margin-bottom: 100px; font-weight: 300;'>Identifique el protocolo internacional.</p>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
