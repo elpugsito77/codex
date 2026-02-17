@@ -7,18 +7,20 @@ st.set_page_config(
     page_title="Codex Intelligence - Diego Cuenca",
     page_icon="📜",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded" # Forzamos que la IA esté abierta desde el inicio
 )
 
 # --- LÓGICA DEL CHATBOT CON IA (GEMINI API) ---
 def call_gemini_api(messages):
+    # Obtener clave de los secretos de Streamlit
     api_key = st.secrets.get("GEMINI_API_KEY", "")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={api_key}"
     
     system_prompt = """Eres el 'Codex Intelligence System'. Un asistente de IA de élite.
     Usuario: Diego Armando Cuenca Lavana.
     Especialidad: Norma CXS 96-1981 (Jamón Curado Cocido) y seguridad alimentaria.
-    Responde en español de forma técnica y elegante. Si no hay clave API, avisa al usuario."""
+    Responde en español de forma técnica y elegante.
+    Tu objetivo es ayudar con dudas sobre procesos, ingredientes y normatividad cárnica."""
 
     contents = []
     for m in messages:
@@ -36,17 +38,19 @@ def call_gemini_api(messages):
     for i in range(5):
         try:
             if not api_key:
-                return "Configuración requerida: Agregue GEMINI_API_KEY en Secrets."
+                return "⚠️ Configuración requerida: Por favor, agrega la GEMINI_API_KEY en los 'Secrets' de Streamlit para activar el asistente."
+            
             response = requests.post(url, json=payload, timeout=20)
             if response.status_code == 200:
                 result = response.json()
-                return result.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "Sin respuesta.")
+                return result.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "Sin respuesta disponible.")
             elif response.status_code == 429:
                 time.sleep(backoff_times[i])
                 continue
         except Exception:
             time.sleep(backoff_times[i])
-    return "Error de conexión con el sistema inteligente."
+    
+    return "El sistema inteligente está procesando muchas solicitudes. Intente en un momento."
 
 # --- SISTEMA DE DISEÑO ULTRA-LIMPIO Y RESPONSIVO ---
 st.markdown("""
@@ -56,38 +60,29 @@ st.markdown("""
     /* Fondo base */
     .stApp { background-color: #020617; }
 
-    /* --- OCULTAR TODO EL SISTEMA (HEADER, FOOTER, MENU, TOOLBAR) --- */
+    /* --- LIMPIEZA DE INTERFAZ (OCULTAR TEXTOS DE SISTEMA Y BOTONES) --- */
     header, footer, [data-testid="stHeader"], [data-testid="stToolbar"], 
     [data-testid="stSidebarCollapseButton"], [data-testid="collapsedControl"],
     button[title="Collapse sidebar"], button[title="Expand sidebar"],
     .st-emotion-cache-6qob1r, .st-emotion-cache-1647ite, .st-emotion-cache-ch5vun {
         display: none !important;
         visibility: hidden !important;
-        height: 0 !important;
     }
 
-    /* Quitar espacios en blanco de arriba */
+    /* Quitar padding de Streamlit */
     .main .block-container {
         padding-top: 2rem !important;
         padding-bottom: 2rem !important;
     }
 
-    /* --- RESPONSIVIDAD CELULAR --- */
+    /* --- RESPONSIVIDAD --- */
     @media (max-width: 768px) {
-        .main-title, .accent-title {
-            font-size: 3rem !important;
-            letter-spacing: -2px !important;
-        }
-        .custom-card {
-            padding: 25px !important;
-            border-radius: 30px !important;
-        }
-        .doc-title {
-            font-size: 1.3rem !important;
-        }
+        .main-title, .accent-title { font-size: 3rem !important; }
+        .custom-card { padding: 25px !important; }
+        [data-testid="stSidebar"] { width: 100% !important; }
     }
 
-    /* Centrado Maestro Portada */
+    /* Centrado Portada */
     .stApp:has(.splash-marker) [data-testid="stVerticalBlock"] {
         display: flex;
         flex-direction: column;
@@ -101,144 +96,120 @@ st.markdown("""
     h1, h2, h3, .serif-text { font-family: 'Playfair Display', serif !important; color: #f8fafc; margin: 0 !important; }
     p, span, div, .sans-text { font-family: 'Inter', sans-serif !important; color: #94a3b8; }
 
-    /* --- DISEÑO CHATBOT (SIDEBAR) --- */
+    /* --- DISEÑO CHATBOT (SIDEBAR FIX) --- */
     [data-testid="stSidebar"] {
         background-color: #050a18 !important;
-        border-right: 1px solid rgba(59, 130, 246, 0.1);
-        width: 100% !important;
-        max-width: 380px !important;
+        border-right: 1px solid rgba(59, 130, 246, 0.15);
     }
 
     .chat-bubble-user {
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.05));
+        background: rgba(37, 99, 235, 0.15);
         border: 1px solid rgba(59, 130, 246, 0.3);
-        padding: 18px; border-radius: 25px 25px 5px 25px;
+        padding: 15px; border-radius: 20px 20px 5px 20px;
         color: #f1f5f9; margin-bottom: 20px; font-size: 0.85rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     
     .chat-bubble-bot {
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 18px; border-radius: 25px 25px 25px 5px;
+        padding: 15px; border-radius: 20px 20px 20px 5px;
         color: #cbd5e1; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.6;
     }
 
-    /* --- PORTADA --- */
+    /* Portada */
     .main-title { font-size: 6.5rem; font-weight: 800; letter-spacing: -6px; line-height: 0.8; background: linear-gradient(to bottom, #ffffff, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .accent-title { font-size: 6.5rem; font-weight: 700; letter-spacing: -6px; line-height: 0.8; color: #3b82f6; font-style: italic; }
     .glow-icon { font-size: 5rem; margin-bottom: 30px; filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.5)); }
 
-    /* --- TARJETAS --- */
+    /* Tarjetas */
     .card-link { text-decoration: none !important; display: block; margin-bottom: 25px; }
     .custom-card {
         background: #ffffff; padding: 45px; border-radius: 45px;
-        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); text-align: left;
+        transition: all 0.5s ease; text-align: left;
     }
-    .custom-card:hover { transform: translateY(-15px) scale(1.02); box-shadow: 0 40px 80px rgba(0,0,0,0.3); border: 1px solid #3b82f6; }
-    .doc-code { background: #eff6ff; color: #2563eb; font-weight: 800; font-size: 0.7rem; padding: 6px 14px; border-radius: 10px; letter-spacing: 2px; display: inline-block; margin-bottom: 15px; }
-    .doc-title { color: #0f172a; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; }
+    .custom-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.3); border: 1px solid #3b82f6; }
+    .doc-code { background: #eff6ff; color: #2563eb; font-weight: 800; font-size: 0.7rem; padding: 5px 12px; border-radius: 8px; margin-bottom: 12px; display: inline-block; }
+    .doc-title { color: #0f172a; font-size: 1.8rem; font-weight: 900; }
 
     /* Botones */
     div.stButton > button {
-        border-radius: 20px !important; background: #ffffff !important; color: #020617 !important; padding: 18px 60px !important;
-        font-weight: 800 !important; border: none !important; letter-spacing: 5px; box-shadow: 0 20px 40px rgba(0,0,0,0.4) !important;
-        margin-top: 40px !important; width: 100%; max-width: 300px;
+        border-radius: 20px !important; background: #ffffff !important; color: #020617 !important; padding: 15px 50px !important;
+        font-weight: 800 !important; border: none !important; letter-spacing: 4px; box-shadow: 0 15px 30px rgba(0,0,0,0.4) !important;
+        margin-top: 30px !important;
     }
-
-    .cat-divider { margin: 80px 0 40px 0; padding: 15px 25px; border-left: 5px solid #3b82f6; letter-spacing: 10px; font-weight: 800; color: white; text-transform: uppercase; background: rgba(255,255,255,0.01); }
     </style>
     """, unsafe_allow_html=True)
 
-# --- CHATBOT EN EL SIDEBAR ---
+# --- SIDEBAR: ASISTENTE IA ---
 with st.sidebar:
-    st.markdown("<h2 class='serif-text' style='font-size: 2.2rem; margin-top: 20px !important;'>Codex AI</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size: 0.8rem; opacity: 0.4; letter-spacing: 1px;'>SYSTEM INTELLIGENCE</p>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<h2 class='serif-text' style='font-size: 2rem; margin-top: 10px !important;'>Codex AI</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.75rem; opacity: 0.4; letter-spacing: 2px;'>INTELIGENCIA NORMATIVA</p>", unsafe_allow_html=True)
+    st.divider()
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
+    # Mostrar historial
     for m in st.session_state.messages:
         if m["role"] == "user":
             st.markdown(f'<div class="chat-bubble-user">{m["content"]}</div>', unsafe_allow_html=True)
         else:
-            st.markdown(f'<div class="chat-bubble-bot"><span style="color:#3b82f6;font-weight:800;font-size:0.7rem;letter-spacing:2px;display:block;margin-bottom:8px;">ASSISTANT</span>{m["content"]}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="chat-bubble-bot"><span style="color:#3b82f6;font-weight:800;font-size:0.6rem;display:block;margin-bottom:5px;letter-spacing:1px;">SISTEMA</span>{m["content"]}</div>', unsafe_allow_html=True)
 
+    # Input
     if prompt := st.chat_input("Consulta la IA..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.rerun()
 
+    # Respuesta
     if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
         with st.spinner("Analizando protocolos..."):
             ans = call_gemini_api(st.session_state.messages)
             st.session_state.messages.append({"role": "assistant", "content": ans})
             st.rerun()
 
-# --- NAVEGACIÓN ---
+# --- VISTAS ---
 if 'view' not in st.session_state:
     st.session_state.view = 'splash'
 
-# --- 1. PORTADA ---
 if st.session_state.view == 'splash':
     st.markdown('<div class="splash-marker"></div>', unsafe_allow_html=True)
     st.markdown('<div class="glow-icon">📜</div>', unsafe_allow_html=True)
     st.markdown('<h1 class="main-title">MANUAL DE</h1>', unsafe_allow_html=True)
     st.markdown('<h1 class="accent-title">NORMATIVIDAD</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="letter-spacing: 15px; margin-top: 30px; opacity: 0.3; color: white; font-size: 1rem; font-weight: 300;">CODEX ALIMENTARIUS</p>', unsafe_allow_html=True)
-    
+    st.markdown('<p style="letter-spacing: 15px; margin-top: 30px; opacity: 0.3; color: white;">CODEX ALIMENTARIUS</p>', unsafe_allow_html=True)
     if st.button("INGRESAR"):
         st.session_state.view = 'selection'
         st.rerun()
-    st.markdown("<br><br><p style='color: #1e293b; font-size: 0.7rem; letter-spacing: 10px; font-weight: 800;'>DIEGO ARMANDO CUENCA LAVANA</p>", unsafe_allow_html=True)
 
-# --- 2. SELECCIÓN ---
 elif st.session_state.view == 'selection':
     st.markdown("<h1 style='text-align: center; font-size: 4rem; letter-spacing: -3px;'>Selección Técnica</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b; font-size: 1.2rem; margin-bottom: 60px;'>Identifique el estándar internacional.</p>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown("""
-            <div class="custom-card" style="text-align: center; background: linear-gradient(135deg, #ffffff, #f8fafc);">
-                <div style="font-size: 6rem; margin-bottom: 30px;">🍖</div>
-                <h3 style="font-size: 2.5rem; color: #0f172a; margin-bottom: 10px; font-weight: 900; letter-spacing: -1px;">JAMÓN CURADO COCIDO</h3>
+            <div class="custom-card" style="text-align: center;">
+                <div style="font-size: 5rem; margin-bottom: 20px;">🍖</div>
+                <h3 class="doc-title">JAMÓN CURADO COCIDO</h3>
                 <div class="doc-code">CXS 96-1981</div>
-                <p style="color: #64748b; font-size: 1.1rem; margin-top: 25px; font-style: italic; line-height: 1.6;">Protocolo de identidad y seguridad técnica.</p>
+                <p style="color: #64748b; font-size: 1rem; font-style: italic;">Estándar de identidad y seguridad técnica.</p>
             </div>
         """, unsafe_allow_html=True)
         if st.button("ABRIR EXPEDIENTE"):
             st.session_state.view = 'manual'
             st.rerun()
 
-# --- 3. MANUAL ---
 elif st.session_state.view == 'manual':
     st.markdown("<style>.stApp { background-color: #fcfdfe; }</style>", unsafe_allow_html=True)
     if st.button("← VOLVER"):
         st.session_state.view = 'selection'
         st.rerun()
+    st.markdown("<h1 style='color: #0f172a; font-size: 3.5rem; font-weight: 900;'>Documentación Oficial</h1>", unsafe_allow_html=True)
     
-    st.markdown("<h1 style='color: #0f172a; font-size: 4rem; letter-spacing: -4px; font-weight: 900;'>Documentación Oficial</h1>", unsafe_allow_html=True)
-    
-    manual_data = {
-        "I. PRÁCTICAS (CXC)": [
-            ("Higiene / Principios", "CXC 1-1969", "Protocolos básicos de higiene alimentaria.", "https://www.fao.org/4/a1552s/a1552s00.pdf"),
-            ("Higiene / Carne", "CXC 58-2005", "Directrices sanitarias para la carne.", "https://www.fao.org/fao-who-codexalimentarius/sh-proxy/en/?lnk=1&url=https%253A%252F%252Fworkspace.fao.org%252Fsites%252Fcodex%252FStandards%252FCXC%B58-2005%252FCXC_058s.pdf"),
-            ("Higiene / Pocos Ácidos", "CXC 23-1979", "Seguridad en procesos térmicos.", "https://www.fao.org/3/y1579s/y1579s02.pdf"),
-        ],
-        "II. DIRECTRICES (CXG)": [
-            ("Aditivos / Aromatizantes", "CXG 66-2008", "Control de aromatizantes y humos.", "https://www.fao.org/input/download/standards/11020/cxg_066s.pdf"),
-            ("Higiene / Microbiano", "CXG 21-1997", "Parámetros biológicos de inocuidad.", "https://www.fao.org/4/y5307s/y5307s04.htm"),
-        ],
-        "III. GENERALES (CXS)": [
-            ("Aditivos Alimentarios", "CXS 192-1995", "Regulación internacional sobre aditivos.", "https://www.fao.org/gsfaonline/docs/CXS_192s.pdf"),
-            ("Contaminantes / Toxinas", "CXS 193-1995", "Vigilancia de metales pesados y toxinas.", "https://www.fao.org/fileadmin/user_upload/livestockgov/documents/CXS_193s.pdf"),
-            ("Etiquetado / Envasados", "CXS 1-1985", "Declaración de ingredientes obligatoria.", "https://www.fao.org/4/y2770s/y2770s02.htm"),
-            ("Análisis y Muestreo", "CXS 234-1999", "Métodos de laboratorio oficiales.", "https://www.fao.org/fao-who-codexalimentarius/sh-proxy/en/?lnk=1&url=https%253A%252F%252Fworkspace.fao.org%252Fsites%252Fcodex%252FStandards%252FCXS%B234-1999%252FCXS_234s.pdf"),
-        ]
-    }
-
-    for categoria, items in manual_data.items():
-        st.markdown(f"<div class='cat-divider'>{categoria}</div>", unsafe_allow_html=True)
-        cols = st.columns(2)
-        for i, (nombre, codigo, desc, url) in enumerate(items):
-            with cols[i % 2]:
-                st.markdown(f'<a href="{url}" target="_blank" class="card-link"><div class="custom-card"><div class="doc-code">{codigo}</div><div class="doc-title">{nombre}</div><p style="color:#64748b;font-size:0.95rem;margin-top:15px;font-style:italic;">{desc}</p></div></a>', unsafe_allow_html=True)
+    # Ejemplo de sección
+    st.markdown("<div style='margin-top:40px; border-left: 5px solid #3b82f6; padding-left: 20px; font-weight: 800;'>I. PRÁCTICAS (CXC)</div>", unsafe_allow_html=True)
+    cols = st.columns(2)
+    with cols[0]:
+        st.markdown('<a href="https://www.fao.org/4/a1552s/a1552s00.pdf" target="_blank" class="card-link"><div class="custom-card"><div class="doc-code">CXC 1-1969</div><div class="doc-title" style="font-size:1.3rem;">Higiene / Principios</div></div></a>', unsafe_allow_html=True)
+    with cols[1]:
+        st.markdown('<a href="https://www.fao.org/3/y1579s/y1579s02.pdf" target="_blank" class="card-link"><div class="custom-card"><div class="doc-code">CXC 23-1979</div><div class="doc-title" style="font-size:1.3rem;">Pocos Ácidos</div></div></a>', unsafe_allow_html=True)
