@@ -30,7 +30,6 @@ st.markdown("""
     }
 
     /* --- CENTRADO TOTAL DE LA PORTADA --- */
-    /* Forzamos que el contenedor de la app sea un flexbox cuando estamos en la portada */
     .stApp:has(.splash-marker) [data-testid="stVerticalBlock"] {
         display: flex;
         flex-direction: column;
@@ -89,7 +88,13 @@ st.markdown("""
         font-size: 0.9rem;
     }
 
-    /* --- TARJETAS (CARDS) --- */
+    /* --- TARJETAS (CARDS) CLICKABLES --- */
+    .card-link {
+        text-decoration: none !important;
+        display: block;
+        margin-bottom: 25px;
+    }
+
     .custom-card {
         background-color: #ffffff;
         padding: 40px;
@@ -97,7 +102,7 @@ st.markdown("""
         border: 1px solid #f1f5f9;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        margin-bottom: 25px;
+        text-align: left;
     }
 
     .selection-card {
@@ -141,7 +146,7 @@ st.markdown("""
         font-style: italic;
     }
 
-    /* --- BOTÓN PREMIUM --- */
+    /* --- BOTONES PREMIUM --- */
     div.stButton > button {
         border-radius: 25px !important;
         background: #ffffff !important;
@@ -189,7 +194,6 @@ if 'view' not in st.session_state:
 
 # --- 1. PORTADA (DISEÑO CENTRADO) ---
 if st.session_state.view == 'splash':
-    # Marcador invisible para activar el CSS de centrado
     st.markdown('<div class="splash-marker"></div>', unsafe_allow_html=True)
     
     st.markdown("""
@@ -201,14 +205,13 @@ if st.session_state.view == 'splash':
         </div>
     """, unsafe_allow_html=True)
     
-    # El botón ahora aparecerá justo debajo del texto y centrado
     if st.button("INGRESAR"):
         st.session_state.view = 'selection'
         st.rerun()
     
     st.markdown("<br><br><br><p style='text-align: center; color: #475569; font-size: 0.75rem; letter-spacing: 8px; font-weight: 600;'>DIEGO ARMANDO CUENCA LAVANA</p>", unsafe_allow_html=True)
 
-# --- 2. SELECCIÓN (ESTILO MINIMALISTA) ---
+# --- 2. SELECCIÓN ---
 elif st.session_state.view == 'selection':
     st.markdown("<br><br><br>", unsafe_allow_html=True)
     st.markdown("<h1 style='text-align: center; font-size: 4.5rem; letter-spacing: -3px; color: white;'>Selección de Producto</h1>", unsafe_allow_html=True)
@@ -231,7 +234,7 @@ elif st.session_state.view == 'selection':
             st.session_state.view = 'manual'
             st.rerun()
 
-# --- 3. MANUAL (ESTILO DE DOCUMENTACIÓN TÉCNICA) ---
+# --- 3. MANUAL (TARJETAS CLICKABLES SIN BOTONES) ---
 elif st.session_state.view == 'manual':
     st.markdown("<style>.stApp { background-color: #fcfdfe; }</style>", unsafe_allow_html=True)
     
@@ -280,13 +283,15 @@ elif st.session_state.view == 'manual':
         cols = st.columns(2)
         for i, (nombre, codigo, desc, url) in enumerate(items):
             with cols[i % 2]:
+                # Envolvemos toda la tarjeta en un tag <a> para que sea clickable
                 st.markdown(f"""
-                    <div class="custom-card">
-                        <div class="doc-code">{codigo}</div>
-                        <div class="doc-title">{nombre}</div>
-                        <p class="doc-desc">{desc}</p>
-                    </div>
+                    <a href="{url}" target="_blank" class="card-link">
+                        <div class="custom-card">
+                            <div class="doc-code">{codigo}</div>
+                            <div class="doc-title">{nombre}</div>
+                            <p class="doc-desc">{desc}</p>
+                        </div>
+                    </a>
                 """, unsafe_allow_html=True)
-                st.link_button(f"CONSULTAR PDF", url, use_container_width=True)
 
     st.markdown("<br><br><p style='text-align: center; color: #94a3b8; font-size: 0.9rem; letter-spacing: 5px; font-weight: 700;'>CODEX ALIMENTARIUS • GASTRONOMÍA • 2026</p>", unsafe_allow_html=True)
