@@ -29,139 +29,151 @@ st.markdown("""
         color: #94a3b8;
     }
 
-    /* --- PORTADA REDISEÑADA (ESTILO BOUTIQUE) --- */
-    .splash-container {
-        height: 85vh;
+    /* --- CENTRADO TOTAL DE LA PORTADA --- */
+    /* Forzamos que el contenedor de la app sea un flexbox cuando estamos en la portada */
+    .stApp:has(.splash-marker) [data-testid="stVerticalBlock"] {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        text-align: center;
-        background: 
-            radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.08) 0%, transparent 40%),
-            radial-gradient(circle at 80% 70%, rgba(30, 64, 175, 0.08) 0%, transparent 40%);
+        min-height: 80vh;
     }
 
     .hero-box {
-        position: relative;
-        padding: 60px;
-        border-radius: 40px;
-        transition: all 0.5s ease;
+        text-align: center;
+        padding: 40px;
+        z-index: 10;
     }
 
     .hero-icon {
-        font-size: 3.5rem;
-        margin-bottom: 25px;
-        filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.5));
+        font-size: 4rem;
+        margin-bottom: 20px;
+        filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6));
         animation: float 4s ease-in-out infinite;
     }
 
     @keyframes float {
         0% { transform: translateY(0px); }
-        50% { transform: translateY(-15px); }
+        50% { transform: translateY(-20px); }
         100% { transform: translateY(0px); }
     }
 
     .main-title {
-        font-size: 5.5rem;
-        line-height: 0.85;
+        font-size: 6rem;
+        line-height: 0.8;
         margin: 0;
-        letter-spacing: -3px;
-        background: linear-gradient(to bottom, #ffffff 0%, #94a3b8 100%);
+        letter-spacing: -4px;
+        background: linear-gradient(to bottom, #ffffff 0%, #64748b 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        font-weight: 800;
     }
 
     .accent-title {
-        font-size: 5.5rem;
-        line-height: 0.85;
+        font-size: 6rem;
+        line-height: 0.8;
         margin: 0;
-        letter-spacing: -3px;
+        letter-spacing: -4px;
         color: #3b82f6;
         font-style: italic;
+        font-weight: 700;
     }
 
-    /* --- TARJETAS (CARDS) SIN FOTOS --- */
+    .subtitle {
+        letter-spacing: 15px;
+        font-weight: 300;
+        margin-top: 40px !important;
+        opacity: 0.6;
+        color: white;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+
+    /* --- TARJETAS (CARDS) --- */
     .custom-card {
         background-color: #ffffff;
         padding: 40px;
-        border-radius: 35px;
+        border-radius: 40px;
         border: 1px solid #f1f5f9;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-bottom: 25px;
     }
 
     .selection-card {
-        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
         border: 1px solid rgba(59, 130, 246, 0.1);
         padding: 60px;
         text-align: center;
     }
 
     .custom-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-15px) scale(1.02);
+        box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.2);
         border-color: #3b82f6;
     }
 
     .doc-title {
         color: #0f172a;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         font-weight: 800;
-        margin-bottom: 8px;
-        letter-spacing: -0.5px;
+        margin-bottom: 10px;
+        letter-spacing: -0.8px;
     }
 
     .doc-code {
         color: #2563eb;
         font-weight: 700;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 2px;
         background: #eff6ff;
-        padding: 4px 12px;
-        border-radius: 8px;
+        padding: 6px 14px;
+        border-radius: 10px;
         display: inline-block;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
 
     .doc-desc {
         color: #64748b;
-        font-size: 0.95rem;
-        line-height: 1.6;
+        font-size: 1rem;
+        line-height: 1.7;
         font-style: italic;
     }
 
-    /* --- BOTONES --- */
-    .stButton>button {
-        border-radius: 18px !important;
+    /* --- BOTÓN PREMIUM --- */
+    div.stButton > button {
+        border-radius: 25px !important;
         background: #ffffff !important;
-        color: #0f172a !important;
-        padding: 18px 50px !important;
+        color: #020617 !important;
+        padding: 20px 60px !important;
         font-weight: 800 !important;
         border: none !important;
-        transition: all 0.3s ease !important;
+        transition: all 0.4s ease !important;
         text-transform: uppercase;
-        letter-spacing: 3px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+        letter-spacing: 4px;
+        font-size: 1rem !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4) !important;
+        margin-top: 40px !important;
     }
 
-    .stButton>button:hover {
+    div.stButton > button:hover {
         background: #3b82f6 !important;
         color: #ffffff !important;
-        transform: scale(1.05) !important;
+        transform: scale(1.1) !important;
+        box-shadow: 0 20px 45px rgba(59, 130, 246, 0.5) !important;
     }
 
     .cat-divider {
-        margin: 70px 0 35px 0;
-        padding: 12px 25px;
+        margin: 80px 0 40px 0;
+        padding: 15px 30px;
         background: rgba(255,255,255,0.03);
-        border-left: 2px solid #3b82f6;
+        border-left: 3px solid #3b82f6;
         color: #f8fafc;
         font-weight: 800;
-        letter-spacing: 5px;
-        font-size: 0.9rem;
+        letter-spacing: 6px;
+        font-size: 1rem;
+        text-transform: uppercase;
     }
 
     /* Ocultar elementos de Streamlit */
@@ -175,43 +187,42 @@ st.markdown("""
 if 'view' not in st.session_state:
     st.session_state.view = 'splash'
 
-# --- 1. PORTADA (DISEÑO TIPOGRÁFICO) ---
+# --- 1. PORTADA (DISEÑO CENTRADO) ---
 if st.session_state.view == 'splash':
-    st.markdown('<div class="splash-container">', unsafe_allow_html=True)
+    # Marcador invisible para activar el CSS de centrado
+    st.markdown('<div class="splash-marker"></div>', unsafe_allow_html=True)
+    
     st.markdown("""
         <div class="hero-box">
             <div class="hero-icon">📜</div>
             <h1 class="main-title">MANUAL DE</h1>
             <h1 class="accent-title">NORMATIVIDAD</h1>
-            <p style="letter-spacing: 12px; font-weight: 300; margin-top: 30px; opacity: 0.5; color: white;">CODEX ALIMENTARIUS</p>
+            <p class="subtitle">CODEX ALIMENTARIUS</p>
         </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col2:
-        if st.button("INICIAR CONSULTA"):
-            st.session_state.view = 'selection'
-            st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
+    # El botón ahora aparecerá justo debajo del texto y centrado
+    if st.button("INGRESAR"):
+        st.session_state.view = 'selection'
+        st.rerun()
     
-    st.markdown("<p style='text-align: center; color: #475569; font-size: 0.7rem; letter-spacing: 6px; margin-top: 0px;'>DIEGO ARMANDO CUENCA LAVANA</p>", unsafe_allow_html=True)
+    st.markdown("<br><br><br><p style='text-align: center; color: #475569; font-size: 0.75rem; letter-spacing: 8px; font-weight: 600;'>DIEGO ARMANDO CUENCA LAVANA</p>", unsafe_allow_html=True)
 
 # --- 2. SELECCIÓN (ESTILO MINIMALISTA) ---
 elif st.session_state.view == 'selection':
     st.markdown("<br><br><br>", unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; font-size: 4rem; letter-spacing: -2px;'>Selección de Producto</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b; font-size: 1.2rem; font-weight: 300;'>Identifique el estándar técnico a inspeccionar.</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 4.5rem; letter-spacing: -3px; color: white;'>Selección de Producto</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 1.3rem; font-weight: 300;'>Identifique el estándar técnico a inspeccionar.</p>", unsafe_allow_html=True)
     st.markdown("<br><br>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown(f"""
             <div class="custom-card selection-card">
-                <div style="font-size: 4rem; margin-bottom: 20px;">🍖</div>
-                <h3 style="font-size: 2.5rem; color: #0f172a; margin-bottom: 10px; letter-spacing: -1px;">JAMÓN CURADO COCIDO</h3>
-                <div class="doc-code" style="font-size: 1rem; padding: 6px 20px;">CXS 96-1981</div>
-                <p style="color: #64748b; font-size: 1.1rem; margin-top: 25px; line-height: 1.6; font-weight: 400;">
+                <div style="font-size: 5rem; margin-bottom: 25px;">🍖</div>
+                <h3 style="font-size: 2.8rem; color: #0f172a; margin-bottom: 10px; letter-spacing: -1.5px; font-weight: 900;">JAMÓN CURADO COCIDO</h3>
+                <div class="doc-code" style="font-size: 1.1rem; padding: 8px 25px;">CXS 96-1981</div>
+                <p style="color: #64748b; font-size: 1.2rem; margin-top: 30px; line-height: 1.8; font-weight: 400; font-style: italic;">
                     Estándar internacional de identidad, calidad y seguridad alimentaria para productos cárnicos curados.
                 </p>
             </div>
@@ -220,7 +231,7 @@ elif st.session_state.view == 'selection':
             st.session_state.view = 'manual'
             st.rerun()
 
-# --- 3. MANUAL (ESTILO DE DOCUMENTACIÓN LIMPIA) ---
+# --- 3. MANUAL (ESTILO DE DOCUMENTACIÓN TÉCNICA) ---
 elif st.session_state.view == 'manual':
     st.markdown("<style>.stApp { background-color: #fcfdfe; }</style>", unsafe_allow_html=True)
     
@@ -230,16 +241,15 @@ elif st.session_state.view == 'manual':
             st.session_state.view = 'selection'
             st.rerun()
     
-    st.markdown("<h1 style='color: #0f172a; font-size: 3.5rem; margin-bottom: 10px; letter-spacing: -2px;'>Documentación Técnica</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color: #0f172a; font-size: 4rem; margin-bottom: 10px; letter-spacing: -3px; font-weight: 900;'>Documentación Técnica</h1>", unsafe_allow_html=True)
     
-    # Header minimalista
     st.markdown("""
-        <div style="background-color: #f8fafc; border-radius: 25px; padding: 40px; margin-bottom: 50px; border: 1px solid #e2e8f0;">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="font-size: 2.5rem;">📁</div>
+        <div style="background-color: #f8fafc; border-radius: 30px; padding: 45px; margin-bottom: 60px; border: 1px solid #e2e8f0; box-shadow: 0 5px 15px rgba(0,0,0,0.02);">
+            <div style="display: flex; align-items: center; gap: 25px;">
+                <div style="font-size: 3rem;">📁</div>
                 <div>
-                    <h3 style="color: #0f172a; margin: 0; font-size: 1.8rem; letter-spacing: -1px;">JAMÓN CURADO COCIDO</h3>
-                    <p style="color: #3b82f6; font-weight: 800; margin: 0; letter-spacing: 2px; font-size: 0.8rem;">NORMATIVA CONSOLIDADA CXS 96-1981</p>
+                    <h3 style="color: #0f172a; margin: 0; font-size: 2rem; letter-spacing: -1px; font-weight: 800;">JAMÓN CURADO COCIDO</h3>
+                    <p style="color: #3b82f6; font-weight: 900; margin: 0; letter-spacing: 3px; font-size: 0.9rem; text-transform: uppercase;">NORMATIVA CONSOLIDADA CXS 96-1981</p>
                 </div>
             </div>
         </div>
@@ -279,4 +289,4 @@ elif st.session_state.view == 'manual':
                 """, unsafe_allow_html=True)
                 st.link_button(f"CONSULTAR PDF", url, use_container_width=True)
 
-    st.markdown("<br><br><p style='text-align: center; color: #cbd5e1; font-size: 0.8rem; letter-spacing: 4px;'>CODEX ALIMENTARIUS • GASTRONOMÍA • 2026</p>", unsafe_allow_html=True)
+    st.markdown("<br><br><p style='text-align: center; color: #94a3b8; font-size: 0.9rem; letter-spacing: 5px; font-weight: 700;'>CODEX ALIMENTARIUS • GASTRONOMÍA • 2026</p>", unsafe_allow_html=True)
